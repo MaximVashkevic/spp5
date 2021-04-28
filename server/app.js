@@ -84,7 +84,6 @@ class App {
       .quote()
       .stats()
       .range("1m");
-    console.log(iexResults);
     const isUp = iexResults.quote.change >= 0;
     return {
       symbol: iexResults.quote.symbol,

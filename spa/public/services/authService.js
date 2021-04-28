@@ -5,8 +5,6 @@ const AuthService = {
     login: async (login, password) => {
         const response = await FetchHelper.fetchData('login', 'POST', {login, password});
         if (response.status === 200) {
-            alert("logged in")
-            debugger
             window.location.hash = "#/"
             return true
         }

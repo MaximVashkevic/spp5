@@ -37,13 +37,6 @@ const router = async () => {
     }
     let page = pages[url];
 
-    // if (isAuthorized || !UrlHelper.isRouteProtected) {
-    //   alert("authorized");
-    // } else {
-    //   page = pages["/login"];
-    //   window.location.hash = "#/login";
-    // }
-
     switch (page) {
         case MainPage: {
             const results = await BaseService.info()
@@ -94,5 +87,4 @@ const router = async () => {
 MessageHelper.clearMessages()
 window.addEventListener("hashchange", router);
 window.addEventListener("DOMContentLoaded", router);
-window.addEventListener("DOMContentLoaded", () => alert('loaded'))
 window.location.hash="#/"

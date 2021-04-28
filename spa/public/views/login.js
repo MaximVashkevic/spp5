@@ -18,7 +18,6 @@ const Login = {
                 </fieldset>
             </form>`
         )
-        console.log(res)
         return res
     }
     ,

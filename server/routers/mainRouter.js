@@ -28,7 +28,6 @@ router.get("/history", async (req, res) => {
   const history = await app.then((app) =>
     app.history(req.userId)
   );
-  console.log(history)
   const transactions = history.map((transaction) => {
     return {
       symbol: transaction.Symbol.symbol,
