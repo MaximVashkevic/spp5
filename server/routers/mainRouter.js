@@ -2,6 +2,8 @@ const { Router } = require("express");
 const bodyParser = require("body-parser");
 const app = require("../app");
 const ValidationError = require("../validationError");
+const { jwtSecret, jwtCookieKey } = require("../config");
+const jwt = require("jsonwebtoken")
 
 const router = new Router();
 
@@ -46,9 +48,9 @@ router.post("/login", async (req, res) => {
   await app
     .then((app) => app.logIn({ login, password }))
     .then((result) => {
-      // TODO: change with jwt cookie
+      const jwtToken = jwt.sign({id: result.id}, jwtSecret, {expiresIn: "900000" })
       res
-        .cookie("userId", result.id, {maxAge: 900000, httpOnly: true, secure: true, sameSite: 'None'})
+        .cookie(jwtCookieKey, jwtToken, {maxAge: 900000, httpOnly: true, secure: true, sameSite: 'None'})
         .send()
     })
     .catch((err) => {
@@ -100,7 +102,7 @@ router.post("/register", urlencodedParser, async (req, res) => {
 router.delete("/logout", async (req, res) => {
   if (req.userId) {
     res.status(401)
-    .clearCookie('userId')
+    .clearCookie(jwtCookieKey)
     .send()
   }
   else {
