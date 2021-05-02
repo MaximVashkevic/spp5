@@ -1,5 +1,5 @@
 const html = `<% for(let stockInfo of results) { %>
-<a href="<%- "#" + stockInfo.url -%>">
+<a class="actionLink" href="<%- "#" + stockInfo.url -%>">
   <div class="panel panel-default search-result">
     <div class="row">
       <div class="col-xs-10 text-left">
@@ -16,9 +16,6 @@ const html = `<% for(let stockInfo of results) { %>
 const Search = {
     render: async (results) => {
         return await ejs.render(html, results)
-    },
-    afterRender: async () => {
-
     }
 }
 

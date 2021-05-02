@@ -46,11 +46,11 @@ async function logIn(userParams) {
 
   const user = await User.findOne({ where: { login: userParams.login } });
   if (user) {
-    const passwordMathces = await bcrypt.compare(
+    const passwordMatches = await bcrypt.compare(
       userParams.password,
       user.password
     );
-    if (passwordMathces) {
+    if (passwordMatches) {
       return user;
     }
   }

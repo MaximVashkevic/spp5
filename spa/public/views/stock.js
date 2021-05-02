@@ -1,4 +1,5 @@
 import StockService from "../services/stockService.js";
+import {FORCE_REPAINT} from "../config.js";
 
 const html =`<div class="row">
   <div class="col-md-6">
@@ -94,14 +95,15 @@ async function setStockFormListener(form, requestUrl) {
         const amount = form['amount'].value
         const symbol = form['symbol'].value
         await StockService.stockOperation(requestUrl, symbol, amount)
+        window.dispatchEvent(new Event(FORCE_REPAINT))
     })
 }
 
 async function generateChart(chartData) {
-    var ctx = document.getElementById('chart').getContext('2d');
+    const ctx = document.getElementById('chart').getContext('2d');
     ctx.canvas.width = 600;
     ctx.canvas.height = 400;
-    var chart = new Chart(ctx, {
+    new Chart(ctx, {
         type: 'candlestick',
         data: {
             datasets: [{

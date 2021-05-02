@@ -38,7 +38,7 @@ class App {
         TransactionModel.define(sequelize);
         await sequelize.sync();
       } catch (error) {
-        return this.emit("error", error);
+        console.log(error)
       }
       const iex = new IEXCloudClient(fetch, {
         sandbox: true,
@@ -46,9 +46,7 @@ class App {
         version: "stable",
       });
 
-      const app = new App(sequelize, iex, config);
-
-      return app;
+      return new App(sequelize, iex, config);
     })();
   }
 

@@ -8,11 +8,11 @@ const mainRouter = require("./routers/mainRouter");
 
 (async () => {
   const server = express();
-  var corsOptions = {
+  const corsOptions = {
     origin: 'http://localhost:63342',
     credentials: true,
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-  }
+  };
   server.options('*', cors(corsOptions))
   server.use(cors(corsOptions))
   server.use(express.json())

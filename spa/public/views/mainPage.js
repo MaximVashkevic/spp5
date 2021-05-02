@@ -16,7 +16,7 @@ const html = `<div class="panel panel-default">
     <tboby>
       <% for (const transaction of accountInfo.transactions) { %>
       <tr>
-        <td><a href="#/stock/<%=transaction['symbol']%>"><%=transaction["symbol"]%></a></td>
+        <td><a class="actionLink" href="#/stock/<%=transaction['symbol']%>"><%=transaction["symbol"]%></a></td>
         <td><%=transaction["name"]%></td>
         <td><%=transaction["shares"]%></td>
         <td><%=transaction["price"]%></td>
@@ -30,9 +30,6 @@ const html = `<div class="panel panel-default">
 const MainPage = {
     render: async (total, transactions) => {
         return await ejs.render(html, { accountInfo: {total, transactions}})
-    },
-    afterRender: async () => {
-
     }
 }
 

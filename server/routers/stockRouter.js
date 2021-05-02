@@ -3,12 +3,12 @@ const app = require("../app");
 
 const stockRouter = new Router();
 
-stockRouter.get("/search", async (req, res) => {
-  const query = req.query.query;
+stockRouter.get("/search/:query", async (req, res) => {
+  const query = req.params.query;
   let results = await app.then((app) => app.search(query));
   if (results.results.length === 0)
   {
-    results.messages = [{type: 'info', message: 'No results found'}]
+    results.messages = [{type: 'info', text: 'No results found'}]
   }
   res.json(results);
 });

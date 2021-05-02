@@ -1,9 +1,10 @@
 import AuthService from "../services/authService.js"
+import {FORCE_REPAINT} from "../config.js";
 
 
 const Login = {
     render: async() => {
-        const res = await ejs.render(
+        return await ejs.render(
             `<form id="loginForm" action="#/login" method="post">
                 <fieldset>
                     <div class="form-group">
@@ -18,7 +19,6 @@ const Login = {
                 </fieldset>
             </form>`
         )
-        return res
     }
     ,
     afterRender: async() => {
@@ -28,6 +28,7 @@ const Login = {
             const login = loginForm['loginField'].value
             const password = loginForm['passwordField'].value
             await AuthService.login(login, password)
+            window.dispatchEvent(new Event(FORCE_REPAINT))
         })
     }
 }

@@ -34,7 +34,7 @@ module.exports = (req, res, next) => {
     res.status(401);
     res.set("WWW-Authenticate", "Bearer realm=jobbing.com");
     res.json({
-      errors: ["Please login to access the site"],
+      messages: [{type: "info", text:"Please login to access the site"}],
     });
   } else {
     req.userId = req.cookies.jwt ? decodeToken(req.cookies.jwt).id : undefined

@@ -1,4 +1,5 @@
 import AuthService from "../services/authService.js";
+import {FORCE_REPAINT} from "../config.js";
 
 const html = `<form id="registerForm" action="#/register" method="post">
     <fieldset>
@@ -28,6 +29,7 @@ const Register = {
             const password = registerForm['passwordField'].value
             const passwordConfirm = registerForm['passwordConfirmField'].value
             await AuthService.register(login, password, passwordConfirm)
+            window.dispatchEvent(new Event(FORCE_REPAINT))
         })
     }
 }

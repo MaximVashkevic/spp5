@@ -9,6 +9,7 @@ import BaseService from "./services/baseService.js";
 import Navbar from "./views/navbar.js";
 import StockService from "./services/stockService.js";
 import MessageHelper from "./helpers/messageHelper.js";
+import {FORCE_REPAINT} from "./config.js";
 
 const pages = {
     "/": MainPage,
@@ -20,7 +21,6 @@ const pages = {
 };
 
 const router = async () => {
-    await MessageHelper.renderMessages()
     const content = document.querySelector("#site-content");
     const header = document.querySelector("#nav");
 
@@ -39,31 +39,35 @@ const router = async () => {
 
     switch (page) {
         case MainPage: {
-            const results = await BaseService.info()
-            if (results) {
+            const response = await BaseService.info()
+            if (response.status === 200) {
+                const results = response.body
                 content.innerHTML = await page.render(results.total, results.transactions)
             }
             break;
         }
         case History: {
-            const results = await BaseService.history()
-            if (results) {
+            const response = await BaseService.history()
+            if (response.status === 200) {
+                const results = response.body
                 content.innerHTML = await page.render(results)
             }
             break;
         }
         case Stock: {
-            const results = await StockService.stock(routeParts[1])
-            if (results) {
+            const response = await StockService.stock(routeParts[1])
+            if (response.status === 200) {
+                const results = response.body
                 content.innerHTML = await page.render(results.symbolData, results.chartData, results.userShares)
                 await page.afterRender(results.chartData)
             }
             break;
         }
         case Search: {
-            const symbol = routeParts[2]
-            const results = await StockService.search(symbol)
-            if (results) {
+            const query = routeParts[2]
+            const response = (await StockService.search(query))
+            if (response.status === 200) {
+                const results = response.body
                 content.innerHTML = await page.render(results)
             }
             break;
@@ -76,15 +80,26 @@ const router = async () => {
         }
     }
 
+    await MessageHelper.renderMessages()
+
     const isAuthorized = !["register", "login"].some(e => e === UrlHelper.getRouteParts()[0])
     header.innerHTML = await Navbar.render({isAuthorized})
     await Navbar.afterRender({isAuthorized})
 
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
+
+    document.querySelectorAll('.actionLink').forEach(item => {
+        item.addEventListener('click', () => {
+            window.location.hash = item.hash
+            window.dispatchEvent(new Event(FORCE_REPAINT))
+        })
+    })
 };
 
-MessageHelper.clearMessages()
-window.addEventListener("hashchange", router);
-window.addEventListener("DOMContentLoaded", router);
-window.location.hash="#/"
+window.addEventListener("DOMContentLoaded", async () => {
+    window.location.hash = "#/"
+    await router();
+}, {once: true});
+
+window.addEventListener(FORCE_REPAINT, router)

@@ -1,4 +1,5 @@
 import AuthService from "../services/authService.js";
+import {FORCE_REPAINT} from "../config.js";
 
 const html = `
     <div class="container-fluid">
@@ -15,12 +16,12 @@ const html = `
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#/">Jobbing</a>
+            <a class="navbar-brand actionLink" href="#/">Jobbing</a>
         </div>
         <div class="collapse navbar-collapse" id="navbar">
             <% if (isAuthorized) { %>
             <ul class="nav navbar-nav">
-            <li><a href="#/history">History</a></li>
+            <li><a class="actionLink" href="#/history">History</a></li>
             </ul>
             <form id="searchForm" class="navbar-form navbar-left" action="#/stock/search" method="GET">
             <div class="input-group">
@@ -37,8 +38,8 @@ const html = `
             </ul>
             <%} else {%>
             <ul class="nav navbar-nav navbar-right">
-            <li><a href="#/register">Register</a></li>
-            <li><a href="#/login">Log In</a></li>
+            <li><a class="actionLink" href="#/register">Register</a></li>
+            <li><a class="actionLink" href="#/login">Log In</a></li>
             </ul>
             <%} %>
             </div>
@@ -55,6 +56,7 @@ const Navbar = {
                 e.preventDefault()
                 const query = searchForm['query'].value
                 window.location.hash = "#/stock/search/" + query
+                window.dispatchEvent(new Event(FORCE_REPAINT))
             })
 
             const logOutLink = document.querySelector('#logOutLink')
