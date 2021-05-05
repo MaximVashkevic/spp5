@@ -23,7 +23,11 @@ export default {
                     resolve(result)
                 })
             })
-            return await promise
+            const result = {
+                body: await promise,
+                status: 200
+            }
+            return result
         } else {
             window.location.hash = "#/login"
             window.dispatchEvent(new Event(FORCE_REPAINT))

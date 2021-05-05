@@ -13,17 +13,6 @@ const urlencodedParser = bodyParser.urlencoded({
 });
 router.use(urlencodedParser);
 
-router.get("/info", async (req, res) => {
-  const allTransactions = await app.then((app) =>
-    app.info({ userId: req.userId })
-  );
-  const total = await app.then((app) => app.currentCash(req.userId)).catch(err => console.log(err));
-  res.json({
-    total: total.toFixed(2),
-    transactions: allTransactions,
-  });
-});
-
 router.get("/history", async (req, res) => {
   const history = await app.then((app) =>
     app.history(req.userId)

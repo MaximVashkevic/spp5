@@ -5,6 +5,8 @@ const cors = require("cors")
 const http = require('http')
 const {Server} = require('socket.io')
 
+const jApp = require('./app')
+
 const stockRouter = require("./routers/stockRouter");
 const mainRouter = require("./routers/mainRouter");
 
@@ -27,10 +29,16 @@ const mainRouter = require("./routers/mainRouter");
   io.on('connection', (socket) => {
     console.log("connected to io!!!")
     const id = socket.handshake.auth.token
-    socket.on('info', (message, callback) => {
-      console.log(id)
-      console.log('info')
-      callback('message')
+    socket.on('info', async (message, callback) => {
+      const allTransactions = await jApp.then((app) =>
+        app.info({ userId: id })
+      );
+      const total = await jApp.then((app) => app.currentCash(id)).catch(err => console.log(err));
+      response = {
+        total: total.toFixed(2),
+        transactions: allTransactions,
+      }
+      callback(response)
     })
 
     socket.on('disconnect', () => {

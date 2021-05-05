@@ -40,12 +40,10 @@ const router = async () => {
     switch (page) {
         case MainPage: {
             const response = await BaseService.info()
-            // if (response.status === 200) {
-            //     // const results = response.body
-            //     // content.innerHTML = await page.render(results.total, results.transactions)
-            // }
-            alert(response)
-            console.log(response)
+            if (response.status === 200) {
+                const results = response.body
+                content.innerHTML = await page.render(results.total, results.transactions)
+            }
             break;
         }
         case History: {
