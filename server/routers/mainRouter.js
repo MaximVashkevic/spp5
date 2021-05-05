@@ -50,6 +50,7 @@ router.post("/login", async (req, res) => {
       const jwtToken = jwt.sign({id: result.id}, jwtSecret, {expiresIn: "900000" })
       res
         .cookie(jwtCookieKey, jwtToken, {maxAge: 900000, httpOnly: true, secure: true, sameSite: 'None'})
+        .cookie('id', result.id, {maxAge: 900000})
         .send()
     })
     .catch((err) => {
@@ -102,6 +103,7 @@ router.delete("/logout", async (req, res) => {
   if (req.userId) {
     res.status(401)
     .clearCookie(jwtCookieKey)
+    .clearCookie('id')
     .send()
   }
   else {

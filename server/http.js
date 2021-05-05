@@ -26,6 +26,12 @@ const mainRouter = require("./routers/mainRouter");
 
   io.on('connection', (socket) => {
     console.log("connected to io!!!")
+    const id = socket.handshake.auth.token
+    socket.on('info', (message, callback) => {
+      console.log(id)
+      console.log('info')
+      callback('message')
+    })
 
     socket.on('disconnect', () => {
       console.log("disconnect")
