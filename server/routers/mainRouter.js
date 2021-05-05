@@ -5,6 +5,42 @@ const ValidationError = require("../validationError");
 const { jwtSecret, jwtCookieKey } = require("../config");
 const jwt = require("jsonwebtoken")
 
+const {graphql, buildSchema} = require('graphql')
+
+const schema = buildSchema(`
+  type TransactionInfo {
+    symbol: String!
+    name: String!
+    shares: Int!
+    price: Float!
+    total: Float!
+    time: Float!
+  }
+
+  type Query {
+    transactions(userId: Int!): [TransactionInfo]
+  }
+`)
+
+const root = {
+  transactions: async ({userId}) => {
+    const history = await app.then((app) =>
+      app.history(userId)
+    );
+    const transactions = history.map((transaction) => {
+      return {
+        symbol: transaction.Symbol.symbol,
+        name: transaction.Symbol.companyName,
+        shares: transaction.shares,
+        price: transaction.price,
+        total: transaction.price * transaction.shares,
+        time: transaction.time,
+      };
+    });
+    return transactions
+  }
+}
+
 const router = new Router();
 
 // TODO: necessary?
@@ -14,20 +50,14 @@ const urlencodedParser = bodyParser.urlencoded({
 router.use(urlencodedParser);
 
 router.get("/history", async (req, res) => {
-  const history = await app.then((app) =>
-    app.history(req.userId)
-  );
-  const transactions = history.map((transaction) => {
-    return {
-      symbol: transaction.Symbol.symbol,
-      name: transaction.Symbol.companyName,
-      shares: transaction.shares,
-      price: transaction.price,
-      total: transaction.price * transaction.shares,
-      time: transaction.time,
-    };
-  });
-  res.json(transactions);
+  const result = await graphql(schema, `{ transactions(userId: ${req.userId}) {
+    symbol
+    shares
+    price
+    time
+  } }`, root)
+  console.log(JSON.stringify(result))
+  res.json(result.data.transactions);
 });
 
 router.post("/login", async (req, res) => {

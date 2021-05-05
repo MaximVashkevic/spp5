@@ -1,4 +1,12 @@
-const html = `<table class="table table-striped">
+const History = {
+    render: async (transactions) => {
+        console.log(transactions)
+        return getHtml({transactions})
+    }
+}
+
+function getHtml(accountInfo) {
+    return `<table class="table table-striped">
   <thead>
     <tr>
       <th>Symbol</th>
@@ -8,21 +16,18 @@ const html = `<table class="table table-striped">
     </tr>
   </thead>
   <tboby>
-    <% for (const transaction of accountInfo.transactions) { %>
-    <tr>
-      <td><a class="actionLink" href="#/stock/<%=transaction['symbol']%>"><%=transaction["symbol"]%></a></td>
-      <td><%=transaction["shares"]%></td>
-      <td><%=transaction["price"]%></td>
-      <td><%=transaction["time"]%></td>
-    </tr>
-    <% } %>
+  ${accountInfo.transactions.reduce((prev, transaction) => {
+        const date = new Date(transaction["time"])
+        const dateString = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
+        return prev + `<tr>
+      <td><a class="actionLink" href="#/stock/${transaction['symbol']}}">${transaction["symbol"]}</a></td>
+      <td>${transaction["shares"]}</td>
+      <td>${transaction["price"]}</td>
+      <td>${dateString}</td>
+    </tr>`
+    }, "")}
   </tboby>
 </table>`
-
-const History = {
-    render: async (transactions) => {
-        return await ejs.render(html, {accountInfo: {transactions}})
-    }
 }
 
 export default History
