@@ -1,5 +1,6 @@
-import {default as FetchHelper} from "../helpers/fetchWithMessagesHelper.js";
 import {default as IoHelper} from "../helpers/socketHelper.js"
+import {getCookie} from "../helpers/cookieHelper.js";
+
 
 const BaseService = {
     info: async () => {
@@ -11,7 +12,24 @@ const BaseService = {
     },
 
     history: async () => {
-        const response = await FetchHelper.fetchData('history', 'GET')
+        const variables = {
+            id: getCookie('id')
+        }
+        const query = `
+        query fetchHistory($id: Int!) {
+          transactions(userId: $id) {
+            symbol
+            shares
+            price
+            time
+          }
+        }
+      `
+        const message = {
+            query: query,
+            variables: variables
+        }
+        const response = await IoHelper.fetchIo('history', message)
         if (response.status === 200) {
             window.location.hash = "#/history"
         }
